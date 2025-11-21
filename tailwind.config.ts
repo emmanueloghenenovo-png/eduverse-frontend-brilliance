@@ -13,7 +13,16 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Outfit", "system-ui", "sans-serif"],
+      },
       colors: {
+        "glass-bg": "hsl(var(--glass-bg))",
+        "glass-border": "hsl(var(--glass-border))",
+        "neon-green": "hsl(var(--neon-green))",
+        "gradient-start": "hsl(var(--gradient-start))",
+        "gradient-mid": "hsl(var(--gradient-mid))",
+        "gradient-end": "hsl(var(--gradient-end))",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
