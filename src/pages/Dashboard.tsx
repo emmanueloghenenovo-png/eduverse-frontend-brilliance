@@ -9,12 +9,23 @@ import {
   GraduationCap,
   Wallet,
   Coins,
-  Zap
+  Zap,
+  LogOut
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useWeb3Auth } from "@/contexts/Web3AuthContext";
+import { useEffect } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { user, logout, isLoading } = useWeb3Auth();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      navigate("/");
+    }
+  }, [user, isLoading, navigate]);
 
   const features = [
     {
@@ -98,7 +109,9 @@ const Dashboard = () => {
               className="glass-card px-4 py-2 flex items-center gap-2"
             >
               <Wallet className="w-4 h-4 text-neon-green" />
-              <span className="text-sm font-mono">0x7a9...f42e</span>
+              <span className="text-sm font-mono">
+                {user?.walletAddress ? `${user.walletAddress.slice(0, 6)}...${user.walletAddress.slice(-4)}` : "0x7a9...f42e"}
+              </span>
             </motion.div>
 
             <motion.div
@@ -120,6 +133,30 @@ const Dashboard = () => {
               <Zap className="w-4 h-4 text-neon-green" />
               <span className="text-sm font-bold">1,850 XP</span>
             </motion.div>
+
+            {user && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5 }}
+                className="flex items-center gap-3"
+              >
+                <Avatar className="w-10 h-10 border-2 border-neon-green">
+                  <AvatarImage src={user.profileImage} alt={user.name} />
+                  <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white">
+                    {user.name?.charAt(0) || "U"}
+                  </AvatarFallback>
+                </Avatar>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={logout}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <LogOut className="w-4 h-4" />
+                </Button>
+              </motion.div>
+            )}
           </div>
         </div>
       </nav>
@@ -132,7 +169,7 @@ const Dashboard = () => {
           className="text-center mb-16"
         >
           <h1 className="text-5xl md:text-6xl font-bold gradient-text mb-4">
-            Welcome Back, Student!
+            Welcome Back, {user?.name || "Student"}!
           </h1>
           <p className="text-xl text-muted-foreground">
             Choose your next adventure in the EduVerse

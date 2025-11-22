@@ -2,9 +2,32 @@ import { motion } from "framer-motion";
 import { Rocket, Sparkles, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useWeb3Auth } from "@/contexts/Web3AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
 
 const Landing = () => {
   const navigate = useNavigate();
+  const { login, user, isLoading } = useWeb3Auth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
+
+  const handleLogin = async () => {
+    try {
+      await login();
+    } catch (error) {
+      toast({
+        title: "Login Failed",
+        description: "Unable to connect. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const floatingAnimation = {
     y: [0, -20, 0],
@@ -68,7 +91,13 @@ const Landing = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.8 }}
-            className="text-6xl md:text-8xl font-bold gradient-text leading-tight"
+            className="text-6xl md:text-8xl font-bold leading-tight"
+            style={{
+              background: "linear-gradient(135deg, #fff 0%, #e0e7ff 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              textShadow: "0 0 40px rgba(255, 255, 255, 0.5)",
+            }}
           >
             EduVerse
           </motion.h1>
@@ -103,11 +132,12 @@ const Landing = () => {
           >
             <Button
               size="lg"
-              onClick={() => navigate("/dashboard")}
-              className="gradient-bg text-white text-xl px-12 py-8 rounded-2xl font-bold shadow-2xl hover:scale-105 transition-transform duration-300 glow-effect group"
+              onClick={handleLogin}
+              disabled={isLoading}
+              className="gradient-bg text-white text-xl px-12 py-8 rounded-2xl font-bold shadow-2xl hover:scale-105 transition-transform duration-300 glow-effect group disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="flex items-center gap-3">
-                Login with Gmail
+                {isLoading ? "Initializing..." : "Login with Gmail"}
                 <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
               </span>
             </Button>
