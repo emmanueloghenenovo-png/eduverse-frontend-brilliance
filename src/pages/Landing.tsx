@@ -137,7 +137,7 @@ const Landing = () => {
               className="gradient-bg text-white text-xl px-12 py-8 rounded-2xl font-bold shadow-2xl hover:scale-105 transition-transform duration-300 glow-effect group disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span className="flex items-center gap-3">
-                {isLoading ? "Initializing..." : "Login with Gmail"}
+                {isLoading ? "Logging in..." : "Enter EduVerse"}
                 <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
               </span>
             </Button>
